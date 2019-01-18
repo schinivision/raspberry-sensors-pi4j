@@ -6,6 +6,7 @@ import at.schinivision.sensors.common.SensorEventListener;
 import at.schinivision.sensors.common.SensorType;
 import at.schinivision.sensors.sensor.AdcKy053Sensor;
 import at.schinivision.sensors.sensor.TempPressureKy052Sensor;
+import at.schinivision.sensors.sensor.TemperatureKy013Sensor;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +15,7 @@ public class Pi4jsensors {
 
     static boolean shutdown = false;
 
+    @SuppressWarnings("Duplicates") // -> just so that idea does not complain about code duplication of the sample code
     public static void main(String[] args) {
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -27,7 +29,15 @@ public class Pi4jsensors {
         bmp280.addListener(new SensorEventListener() {
             @Override
             public void update(SensorType sensorType, SensorEvent event, Pin pin) {
-//                Logger.getLogger("Main").log(Level.INFO, "SensorType: " + sensorType.getName() + " Event: " + event.getValue() + " " + event.getUnit());
+                Logger.getLogger("Main").log(Level.INFO, "SensorType: " + sensorType.getName() + " Event: " + event.getValue() + " " + event.getUnit());
+            }
+        });
+
+        TemperatureKy013Sensor tempSense = TemperatureKy013Sensor.getInstance();
+        tempSense.addListener(new SensorEventListener() {
+            @Override
+            public void update(SensorType sensorType, SensorEvent event, Pin pin) {
+                Logger.getLogger("Main").log(Level.INFO, "SensorType: " + sensorType.getName() + " Event: " + event.getValue() + " " + event.getUnit());
             }
         });
 
@@ -49,7 +59,8 @@ public class Pi4jsensors {
 
         if (shutdown) {
             bmp280.shutdown();
-            adc.shutdown();
+            tempSense.shutdown();
+//            adc.shutdown();
         }
     }
 }

@@ -22,6 +22,9 @@ import java.util.logging.Logger;
 
 public final class AdcKy053Sensor extends Sensor implements SensorSubscribeInterface, GpioPinListenerAnalog {
 
+    // Singleton Implementation
+    private static AdcKy053Sensor instance = null;
+
     // I2C Bus related variables
     private final I2CBus bus;
     private final int I2CBusNumer = I2CBus.BUS_1;
@@ -78,8 +81,7 @@ public final class AdcKy053Sensor extends Sensor implements SensorSubscribeInter
 
     }
 
-    // Singleton Implementation
-    private static AdcKy053Sensor instance = null;
+
 
 
     public static AdcKy053Sensor getInstance() {
