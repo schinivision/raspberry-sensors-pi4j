@@ -36,7 +36,7 @@ public final class AdcKy053Sensor extends Sensor implements SensorSubscribeInter
     private final GpioPinAnalogInput inputA2;
     private final GpioPinAnalogInput inputA3;
     private final ADS1115GpioProvider gpioProvider; // create custom ADS1115 GPIO provider
-    private final ADS1x15GpioProvider.ProgrammableGainAmplifierValue pga = ADS1x15GpioProvider.ProgrammableGainAmplifierValue.PGA_4_096V;
+    private final ADS1x15GpioProvider.ProgrammableGainAmplifierValue pga = ADS1x15GpioProvider.ProgrammableGainAmplifierValue.PGA_6_144V;
 
     private final double measureValueChangeThreshold = 100;
 
@@ -81,9 +81,6 @@ public final class AdcKy053Sensor extends Sensor implements SensorSubscribeInter
 
     }
 
-
-
-
     public static AdcKy053Sensor getInstance() {
         if (instance == null) {
             try {
@@ -107,7 +104,6 @@ public final class AdcKy053Sensor extends Sensor implements SensorSubscribeInter
             SensorEvent sensorEvent = new SensorEvent();
             sensorEvent.setValue(voltage);
             sensorEvent.setUnit(MeasurementUnits.VOLTAGE_IN_V.getUnit());
-
             switch (analogEvent.getPin().getName()) {
                 case AdcPinNameA0:
                     listener.update(SensorType.ADC_KY_053,sensorEvent, Pin.PIN_0);
