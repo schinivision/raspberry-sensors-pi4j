@@ -1,5 +1,6 @@
 package at.schinivision;
 
+import at.schinivision.sensors.actors.RgbLedKy009;
 import at.schinivision.sensors.common.Pin;
 import at.schinivision.sensors.common.SensorEvent;
 import at.schinivision.sensors.common.SensorEventListener;
@@ -25,13 +26,13 @@ public class Pi4jsensors {
             }
         });
 
-        TempPressureKy052Sensor bmp280 = TempPressureKy052Sensor.getInstance();
-        bmp280.addListener(new SensorEventListener() {
-            @Override
-            public void update(SensorType sensorType, SensorEvent event, Pin pin) {
-                Logger.getLogger("Main").log(Level.INFO, "SensorType: " + sensorType.getName() + " Event: " + event.getValue() + " " + event.getUnit());
-            }
-        });
+//        TempPressureKy052Sensor bmp280 = TempPressureKy052Sensor.getInstance();
+//        bmp280.addListener(new SensorEventListener() {
+//            @Override
+//            public void update(SensorType sensorType, SensorEvent event, Pin pin) {
+//                Logger.getLogger("Main").log(Level.INFO, "SensorType: " + sensorType.getName() + " Event: " + event.getValue() + " " + event.getUnit());
+//            }
+//        });
 
         TemperatureKy013Sensor tempSense = TemperatureKy013Sensor.getInstance();
         tempSense.addListener(new SensorEventListener() {
@@ -41,13 +42,18 @@ public class Pi4jsensors {
             }
         });
 
-        AdcKy053Sensor adc = AdcKy053Sensor.getInstance();
-        adc.addListener(new SensorEventListener() {
-            @Override
-            public void update(SensorType sensorType, SensorEvent event, Pin pin) {
-                Logger.getLogger("Main").log(Level.INFO, "SensorType: " + sensorType.getName() + " " + pin.getName() +" Event: " + event.getValue() + " " + event.getUnit());
-            }
-        });
+//        AdcKy053Sensor adc = AdcKy053Sensor.getInstance();
+//        adc.addListener(new SensorEventListener() {
+//            @Override
+//            public void update(SensorType sensorType, SensorEvent event, Pin pin) {
+//                Logger.getLogger("Main").log(Level.INFO, "SensorType: " + sensorType.getName() + " " + pin.getName() +" Event: " + event.getValue() + " " + event.getUnit());
+//            }
+//        });
+
+        RgbLedKy009 rgbled = new RgbLedKy009();
+        // test color -> AB0CE8 -> FF7600
+        rgbled.setColor((byte)0xab,(byte)0x0C,(byte)0xE8);
+
 
         while (shutdown) {
             try {
@@ -58,9 +64,10 @@ public class Pi4jsensors {
         }
 
         if (shutdown) {
-            bmp280.shutdown();
+//            bmp280.shutdown();
             tempSense.shutdown();
 //            adc.shutdown();
+            rgbled.shutdown();
         }
     }
 }
