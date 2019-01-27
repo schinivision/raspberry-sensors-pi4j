@@ -51,3 +51,7 @@ cd ../raspberry-sensors-pi4j/src/
 javac -classpath .:/opt/pi4j/lib/* -d . ./at/schinivision/Pi4jsensors.java
 sudo java -classpath .:classes:/opt/pi4j/lib/'*' at.schinivision.Pi4jsensors
 ```
+
+### Schematic
+#### Raspberry Pi 3B+ Pinout
+![Raspberry Pi 3B+ Pinout](https://github.com/schinivision/raspberry-sensors-pi4j/blob/master/doc/img/j8header-3b.png?raw=true)
