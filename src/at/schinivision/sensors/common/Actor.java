@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * superclass for sensors
+ * superclass for actors
  */
 public abstract class Actor {
 

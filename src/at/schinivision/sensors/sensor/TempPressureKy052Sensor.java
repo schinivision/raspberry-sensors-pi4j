@@ -1,22 +1,20 @@
 package at.schinivision.sensors.sensor;
 
 import at.schinivision.sensors.common.*;
-import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 
 import java.io.IOException;
-import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 /**
+ * <p>
  * Implementation of the Temperature and Pressure sensor Ky052 from the Joy-It Sensor kit.
  * This implementation applies to all BMP280 Temperature and Pressure Sensors that are controlled by I²C
- *
+ * </p>
  * @see <a href="http://sensorkit.joy-it.net/index.php?title=KY-052_Drucksensor_/_Temperatursensor_-_BMP280_-">KY-052 Drucksensor</a>
  */
 public final class TempPressureKy052Sensor extends Sensor implements SensorSubscribeInterface, Runnable {
@@ -149,7 +147,7 @@ public final class TempPressureKy052Sensor extends Sensor implements SensorSubsc
         device.write(0xF4, (byte) 0x27);
     }
 
-    public void readMeasurements() throws IOException {
+    private void readMeasurements() throws IOException {
         // Check Status Register 0xF3 if sensor is currently measuring -> Delay read
         int status = device.read(0xF3);
         // positive value indicates successful read from bus
@@ -236,7 +234,7 @@ public final class TempPressureKy052Sensor extends Sensor implements SensorSubsc
         }
     }
 
-    public void startSensing() {
+    private void startSensing() {
         Logger.getLogger(TempPressureKy052Sensor.class.getName()).log(Level.INFO, TempPressureKy052Sensor.class.getName() + " Starts sensing");
         if (senseThread == null) {
             senseThread = new Thread(this, this.getClass().getName());

@@ -2,12 +2,15 @@ package at.schinivision.sensors.sensor;
 
 
 import at.schinivision.sensors.common.*;
-import com.pi4j.io.i2c.I2CFactory;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * This class implements the KY013 temperature sensor. Listener to this sensor will receive temperature events.
+ * This sensor uses the @{@link AdcKy053Sensor} Pin 0 to sense temperature based voltage changes.
+ * @see <a href="http://sensorkit.joy-it.net/index.php?title=KY-013_Temperatur-Sensor_Modul">KY-013 Temperature Sensor Module</a>
+ */
 public final class TemperatureKy013Sensor extends Sensor implements SensorEventListener, Runnable {
 
     // Singleton Implementation
@@ -22,7 +25,7 @@ public final class TemperatureKy013Sensor extends Sensor implements SensorEventL
     private int subscriberUpdateRateInMs = 1000;
 
     // Threadcontrol
-    Thread senseThread = null;
+    private Thread senseThread = null;
     private boolean isShutdown = false;
 
     private TemperatureKy013Sensor() {
@@ -31,6 +34,10 @@ public final class TemperatureKy013Sensor extends Sensor implements SensorEventL
         Logger.getLogger(TemperatureKy013Sensor.class.getName()).log(Level.INFO, TemperatureKy013Sensor.class.getName() + " Starts sensing");
     }
 
+    /**
+     * Instantiate KY-013 Temperature sensor
+     * @return TemperatureKy013Sensor instance
+     */
     public static TemperatureKy013Sensor getInstance() {
         if (instance == null) {
             TemperatureKy013Sensor.instance = new TemperatureKy013Sensor();
@@ -47,7 +54,7 @@ public final class TemperatureKy013Sensor extends Sensor implements SensorEventL
         return (t);
     }
 
-    public void startSensing() {
+    private void startSensing() {
         if (senseThread == null) {
             senseThread = new Thread(this, this.getClass().getName());
             senseThread.start();

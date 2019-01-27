@@ -1,5 +1,8 @@
 package at.schinivision.sensors.common;
 
+/**
+ * Enumeration containing basic measurement units
+ */
 public enum MeasurementUnits {
 
     TEMPERATURE_IN_CELSIUS("°C"),

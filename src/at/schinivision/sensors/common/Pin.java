@@ -1,5 +1,8 @@
 package at.schinivision.sensors.common;
 
+/**
+ * Enumeration of Pins. Used to define or distinguish which pin has caused a certain event
+ */
 public enum Pin {
 
     PIN_0("PIN 0", 0),

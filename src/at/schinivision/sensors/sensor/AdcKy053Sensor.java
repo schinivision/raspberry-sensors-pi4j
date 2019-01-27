@@ -12,14 +12,24 @@ import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
 
 import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
+/**
+ * <p>
+ *  This Class implements the Ky-053 analog digital converter based on the ADS1115 chip.
+ *  Subscriber to this sensor will be notified about every voltage change on any of the analogue input pins A0-A3
+ *  The event will contain the PIN that has caused this event described by the @{@link Pin} class
+ * </p>
+ * <p>
+ *  ATTENTION: If analog inputs on the sensor are not tied to any potential (V+ or GND) the analog Input will
+ *  drift/float and therefore will cause a significant amount of update events.
+ * </p>
+ * @see <a href="http://sensorkit.joy-it.net/index.php?title=KY-053_Analog_Digital_Converter">KY-053 I2C Analog Digital Converter</a>
+ */
 public final class AdcKy053Sensor extends Sensor implements SensorSubscribeInterface, GpioPinListenerAnalog {
 
     // Singleton Implementation
@@ -46,7 +56,7 @@ public final class AdcKy053Sensor extends Sensor implements SensorSubscribeInter
     private final String AdcPinNameA3 = "A3";
 
     // Analog Value Change analogEvent
-    GpioPinAnalogValueChangeEvent analogEvent = null;
+    private GpioPinAnalogValueChangeEvent analogEvent = null;
 
     // constructor and sensor initialization
     private AdcKy053Sensor() throws IOException, I2CFactory.UnsupportedBusNumberException {
@@ -55,7 +65,8 @@ public final class AdcKy053Sensor extends Sensor implements SensorSubscribeInter
 
         gpio = GpioFactory.getInstance();
 
-        gpioProvider = new ADS1115GpioProvider(bus, ADS1115GpioProvider.ADS1115_ADDRESS_0x48);//TODO unsupported bus number exception
+        //TODO unsupported bus number exception
+        gpioProvider = new ADS1115GpioProvider(bus, ADS1115GpioProvider.ADS1115_ADDRESS_0x48);
 
         inputA0 = gpio.provisionAnalogInputPin(gpioProvider, ADS1115Pin.INPUT_A0, AdcPinNameA0);
         inputA1 = gpio.provisionAnalogInputPin(gpioProvider, ADS1115Pin.INPUT_A1, AdcPinNameA1);
@@ -73,14 +84,17 @@ public final class AdcKy053Sensor extends Sensor implements SensorSubscribeInter
         gpioProvider.setEventThreshold(measureValueChangeThreshold, ADS1115Pin.INPUT_A3);
 
         inputA0.addListener(this);
-//        inputA1.addListener(this);
-//        inputA2.addListener(this);
-//        inputA3.addListener(this);
+        inputA1.addListener(this);
+        inputA2.addListener(this);
+        inputA3.addListener(this);
 
         Logger.getLogger(AdcKy053Sensor.class.getName()).log(Level.INFO, AdcKy053Sensor.class.getName() + " Starts sensing");
-
     }
 
+    /**
+     * Returns the ADC sensor instance
+     * @return AdcKy053Sensor instance
+     */
     public static AdcKy053Sensor getInstance() {
         if (instance == null) {
             try {
@@ -122,11 +136,15 @@ public final class AdcKy053Sensor extends Sensor implements SensorSubscribeInter
         }
     }
 
+    /**
+     * Shuts down this sensor.
+     */
     public void shutdown() {
         inputA0.removeAllListeners();
         inputA1.removeAllListeners();
         inputA2.removeAllListeners();
         inputA3.removeAllListeners();
+        // TODO This might shut down all other sensor/actor classes depending on gpioProvider
         gpioProvider.shutdown();
     }
 

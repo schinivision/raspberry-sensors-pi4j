@@ -1,5 +1,8 @@
 package at.schinivision.sensors.common;
 
+/**
+ * Enumeration containing sensor types to distinguish the source of an sensor event
+ */
 public enum SensorType {
 
     ADC_KY_053("KY-053 Analog Digital Converter", 53),
