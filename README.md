@@ -28,6 +28,8 @@ gpio readall
 ```
 
 ### Install Pi4J Library 
+Please check pi4j compatibility list here [Wiring PI Homepage](http://pi4j.com/)
+
 #### This will install Version 1.1 -> for Model Raspberry PI 1, 2 and 3 (exclusive B+) 
 
 ```bash
