@@ -84,6 +84,8 @@ public final class TempPressureKy052Sensor extends Sensor implements SensorSubsc
         // i2c read byte array
         byte[] b1 = new byte[24];
         // read calibration data form address 0x88
+        // TODO if during instantiation this read command will throw an io exception caused by i2c bus
+        // the instantiation will fail -> maybe retry
         device.read(0x88, b1, 0, 24);
         // Why are all these bytes "masked" -> to get the representation right!
         // See -> https://stackoverflow.com/questions/4266756/can-we-make-unsigned-byte-in-java/4266841
@@ -167,32 +169,36 @@ public final class TempPressureKy052Sensor extends Sensor implements SensorSubsc
         // Read 6 bytes of data from address 0xF7(247)
         // pressure msb1, pressure msb, pressure lsb, temp msb1, temp msb, temp lsb, humidity lsb, humidity msb
         byte[] data = new byte[6];
-        device.read(0xF7, data, 0, 6);
+        try {
+            device.read(0xF7, data, 0, 6);
 
-        // Convert pressure and temperature data to 19-bits
-        long adc_p = (((long) (data[0] & 0xFF) * 65536) + ((long) (data[1] & 0xFF) * 256) + (long) (data[2] & 0xF0)) / 16;
-        long adc_t = (((long) (data[3] & 0xFF) * 65536) + ((long) (data[4] & 0xFF) * 256) + (long) (data[5] & 0xF0)) / 16;
+            // Convert pressure and temperature data to 19-bits
+            long adc_p = (((long) (data[0] & 0xFF) * 65536) + ((long) (data[1] & 0xFF) * 256) + (long) (data[2] & 0xF0)) / 16;
+            long adc_t = (((long) (data[3] & 0xFF) * 65536) + ((long) (data[4] & 0xFF) * 256) + (long) (data[5] & 0xF0)) / 16;
 
-        // Temperature offset calculations
-        double var1_temp = (((double) adc_t) / 16384.0 - ((double) dig_T1) / 1024.0) * ((double) dig_T2);
-        double var2_temp = ((((double) adc_t) / 131072.0 - ((double) dig_T1) / 8192.0)
-                * (((double) adc_t) / 131072.0 - ((double) dig_T1) / 8192.0)) * ((double) dig_T3);
-        double t_fine = (long) (var1_temp + var2_temp);
-        temp = (var1_temp + var2_temp) / 5120.0;
+            // Temperature offset calculations
+            double var1_temp = (((double) adc_t) / 16384.0 - ((double) dig_T1) / 1024.0) * ((double) dig_T2);
+            double var2_temp = ((((double) adc_t) / 131072.0 - ((double) dig_T1) / 8192.0)
+                    * (((double) adc_t) / 131072.0 - ((double) dig_T1) / 8192.0)) * ((double) dig_T3);
+            double t_fine = (long) (var1_temp + var2_temp);
+            temp = (var1_temp + var2_temp) / 5120.0;
 
-        // Pressure offset calculations
-        double var1 = ((double) t_fine / 2.0) - 64000.0;
-        double var2 = var1 * var1 * ((double) dig_P6) / 32768.0;
-        var2 = var2 + var1 * ((double) dig_P5) * 2.0;
-        var2 = (var2 / 4.0) + (((double) dig_P4) * 65536.0);
-        var1 = (((double) dig_P3) * var1 * var1 / 524288.0 + ((double) dig_P2) * var1) / 524288.0;
-        var1 = (1.0 + var1 / 32768.0) * ((double) dig_P1);
-        double p = 1048576.0 - (double) adc_p;
-        p = (p - (var2 / 4096.0)) * 6250.0 / var1;
-        var1 = ((double) dig_P9) * p * p / 2147483648.0;
-        var2 = p * ((double) dig_P8) / 32768.0;
-        pressure = (p + (var1 + var2 + ((double) dig_P7)) / 16.0) / 100;
-
+            // Pressure offset calculations
+            double var1 = ((double) t_fine / 2.0) - 64000.0;
+            double var2 = var1 * var1 * ((double) dig_P6) / 32768.0;
+            var2 = var2 + var1 * ((double) dig_P5) * 2.0;
+            var2 = (var2 / 4.0) + (((double) dig_P4) * 65536.0);
+            var1 = (((double) dig_P3) * var1 * var1 / 524288.0 + ((double) dig_P2) * var1) / 524288.0;
+            var1 = (1.0 + var1 / 32768.0) * ((double) dig_P1);
+            double p = 1048576.0 - (double) adc_p;
+            p = (p - (var2 / 4096.0)) * 6250.0 / var1;
+            var1 = ((double) dig_P9) * p * p / 2147483648.0;
+            var2 = p * ((double) dig_P8) / 32768.0;
+            pressure = (p + (var1 + var2 + ((double) dig_P7)) / 16.0) / 100;
+        } catch (IOException ex)
+        {
+         // Suppress any IO exception errors that can occur during read on i2c bus
+        }
     }
 
     @Override

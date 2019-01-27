@@ -43,13 +43,13 @@ public class Pi4jsensors {
             }
         });
 
-        AdcKy053Sensor adc = AdcKy053Sensor.getInstance();
-        adc.addListener(new SensorEventListener() {
-            @Override
-            public void update(SensorType sensorType, SensorEvent event, Pin pin) {
-                Logger.getLogger("Main").log(Level.INFO, "SensorType: " + sensorType.getName() + " " + pin.getName() +" Event: " + event.getValue() + " " + event.getUnit());
-            }
-        });
+//        AdcKy053Sensor adc = AdcKy053Sensor.getInstance();
+//        adc.addListener(new SensorEventListener() {
+//            @Override
+//            public void update(SensorType sensorType, SensorEvent event, Pin pin) {
+//                Logger.getLogger("Main").log(Level.INFO, "SensorType: " + sensorType.getName() + " " + pin.getName() +" Event: " + event.getValue() + " " + event.getUnit());
+//            }
+//        });
 
         RgbLed_KY009_KY016 rgbled = new RgbLed_KY009_KY016(RaspiPin.GPIO_04, RaspiPin.GPIO_02, RaspiPin.GPIO_03);
         // test color -> AB0CE8 -> FF7600
@@ -67,7 +67,7 @@ public class Pi4jsensors {
         if (shutdown) {
             bmp280.shutdown();
             tempSense.shutdown();
-            adc.shutdown();
+//            adc.shutdown();
             rgbled.shutdown();
         }
     }
