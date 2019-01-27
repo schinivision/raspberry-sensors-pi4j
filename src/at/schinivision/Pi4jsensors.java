@@ -27,14 +27,16 @@ public class Pi4jsensors {
             }
         });
 
-        TempPressureKy052Sensor bmp280 = TempPressureKy052Sensor.getInstance();
-        bmp280.addListener(new SensorEventListener() {
+        // Example ADC implementation
+        AdcKy053Sensor adc = AdcKy053Sensor.getInstance();
+        adc.addListener(new SensorEventListener() {
             @Override
             public void update(SensorType sensorType, SensorEvent event, Pin pin) {
-                Logger.getLogger("Main").log(Level.INFO, "SensorType: " + sensorType.getName() + " Event: " + event.getValue() + " " + event.getUnit());
+                Logger.getLogger("Main").log(Level.INFO, "SensorType: " + sensorType.getName() + " " + pin.getName() +" Event: " + event.getValue() + " " + event.getUnit());
             }
         });
 
+        // Example Temperature sensor implementation
         TemperatureKy013Sensor tempSense = TemperatureKy013Sensor.getInstance();
         tempSense.addListener(new SensorEventListener() {
             @Override
@@ -43,14 +45,16 @@ public class Pi4jsensors {
             }
         });
 
-//        AdcKy053Sensor adc = AdcKy053Sensor.getInstance();
-//        adc.addListener(new SensorEventListener() {
-//            @Override
-//            public void update(SensorType sensorType, SensorEvent event, Pin pin) {
-//                Logger.getLogger("Main").log(Level.INFO, "SensorType: " + sensorType.getName() + " " + pin.getName() +" Event: " + event.getValue() + " " + event.getUnit());
-//            }
-//        });
+        // Example BMP280 Sensor implementation
+        TempPressureKy052Sensor bmp280 = TempPressureKy052Sensor.getInstance();
+        bmp280.addListener(new SensorEventListener() {
+            @Override
+            public void update(SensorType sensorType, SensorEvent event, Pin pin) {
+                Logger.getLogger("Main").log(Level.INFO, "SensorType: " + sensorType.getName() + " Event: " + event.getValue() + " " + event.getUnit());
+            }
+        });
 
+        // Example RGB LED actor implementation
         RgbLed_KY009_KY016 rgbled = new RgbLed_KY009_KY016(RaspiPin.GPIO_04, RaspiPin.GPIO_02, RaspiPin.GPIO_03);
         // test color -> AB0CE8 -> FF7600
         rgbled.setColor((byte)0xab,(byte)0x0C,(byte)0xE8);
@@ -67,7 +71,7 @@ public class Pi4jsensors {
         if (shutdown) {
             bmp280.shutdown();
             tempSense.shutdown();
-//            adc.shutdown();
+            adc.shutdown();
             rgbled.shutdown();
         }
     }
