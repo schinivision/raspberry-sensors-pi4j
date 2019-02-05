@@ -27,6 +27,19 @@ gpio -v
 gpio readall
 ```
 
+### Turn on I2C on Raspberry
+
+1) Run sudo raspi-config.
+2) Use the down arrow to select 5 Interfacing Options
+3) Arrow down to P5 I2C.
+4) Select yes when it asks you to enable I2C
+5) Also select yes if it asks about automatically loading the kernel module.
+6) Use the right arrow to select the <Finish> button.
+7) Select yes when it asks to reboot.
+
+![Raspberry PI Enable I2C Bus](https://cdn.sparkfun.com/assets/learn_tutorials/4/4/9/i2c-menu2.png)
+
+
 ### Install Pi4J Library 
 Please check pi4j compatibility list here [Wiring PI Homepage](http://pi4j.com/)
 
